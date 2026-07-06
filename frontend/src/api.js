@@ -3,7 +3,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 /**
  * Performs a fetch request with a specified timeout.
  */
-async function fetchWithTimeout(url, options = {}, timeout = 30000) {
+async function fetchWithTimeout(url, options = {}, timeout = 300000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
 
@@ -17,7 +17,7 @@ async function fetchWithTimeout(url, options = {}, timeout = 30000) {
   } catch (error) {
     clearTimeout(id);
     if (error.name === 'AbortError') {
-      throw new Error("Request timed out after 30 seconds.", { cause: error });
+      throw new Error("Request timed out after 5 minutes.", { cause: error });
     }
     throw error;
   }
@@ -32,7 +32,7 @@ async function apiFetch(endpoint, options = {}, retries = 1) {
 
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const response = await fetchWithTimeout(url, options, 30000);
+      const response = await fetchWithTimeout(url, options, 300000);
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
